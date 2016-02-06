@@ -1,0 +1,95 @@
+{% load staticfiles %}
+{% load toko_extras %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Toko Al Aminiy {%block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+
+</head>
+<body>
+    
+        <header id="masterheader" class="container-fluid">
+            <nav id="top-nav" class="nav row">
+                <div class="col-md-6">
+                    <ul class=" nav nav-pills ">
+                        <li><a href="https://m.facebook.com" class="fa fa-facebook"></a></li>
+                        <li><a href="https://m.facebook.com" class="fa fa-instagram"></a></li>
+                        <li><a href="https://m.facebook.com" class="fa fa-whatsapp"></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="nav nav-pills navbar-right ">
+                        <li><a href="{% url 'home_page' %}" >Home</a></li>
+                        <li><a href="{% url 'profil_view'%}">Tentang</a></li>
+                        <li><a href="">Kontak</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <a href="{% url 'home_page' %}" class="judul-halaman">
+                    {% dapatkan_profil 'toko-al-aminiy' %}
+                    </a>    
+                </div>
+                
+            </div>
+            <nav>
+                <div class="navbar navbar-inverse">
+                    <div class="">
+                        <ul class="nav navbar-nav">
+                            <li {% if index %} class="active" {%endif%}><a href="{% url 'home_page'%}">Home</a></li>
+                            <li{% if profpage %} class="active" {%endif%}><a href="{% url 'profil_view'%}">Tentang</a></li>
+                            <li><a href="">Blog</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Kategori <span class="caret"></span></a>
+                                {% dapatkan_semua_kategori %}
+                            </li>
+                        </ul>
+                        <div class="navbar-right" style="margin-right:10px;">
+                            <p class="navbar-text"><b class="fa fa-whatsapp"></b> 0858-6761-6121</p>
+                        <form class="navbar-form navbar-right">
+                            <button type="submit" class="btn btn-default glyphicon glyphicon-search"></button>
+                            <div  class="form-group">
+                                <input class="form-control" type="text" placeholder="Cari Produk ?" >
+                                </form>
+                                </div>
+                            </div>
+                        
+                        
+                    </div>
+                
+            </nav>
+        </header>
+        {% block content %}
+        {% endblock %}
+        <footer>
+            <div class="container-fluid"style="background-color:#333; color:white;">
+                <div class="row" >
+                    <div class="col-md-4" style="margin-top:15px;">
+                        <ul>
+                            <li><a href="">Home</a></li>
+                            <li><a href="">Profil</a></li>
+                            <li><a href="">Kontak</a></li>
+                        </ul>
+                        
+                    </div>
+                    <div class="col-md-4">
+                        
+                        <div class="col-md-4"><a href="https://m.facebook.com" class="fa fa-facebook"></a></div>
+                        <div class="col-md-4"><a href="https://m.facebook.com" class="fa fa-instagram"></a></div>
+                        <div class="col-md-4"><a href="https://m.facebook.com" class="fa fa-whatsapp"></a></div>
+                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">Made by me [mihfazhillah@gmail.com]</div>
+                </div>
+            </div>
+        </footer>
+</html>

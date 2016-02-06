@@ -1,0 +1,32 @@
+{% extends "toko/base.html" %}
+{% block title %}{{kategori.nama | title }}{% endblock %}
+{% block content %}
+{% load toko_extras %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center"><h3>{{ kategori.nama | title }}</h3></div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center center">
+            <div class="panel panel-default">
+                {% for barang in kategori.barang_set.all %}
+                <div class="col-md-4">
+                    <div class="panel-body">
+                        {% with barang.gambar_set.all|first as img %}
+                        <img src="{{img.image.crop.313x363}}" class="img-responsive img-rounded img-thumbnail">
+                        {% endwith %}
+                        <a href="{% url 'produk_detail' barang.slug %}">
+                        <div class="caption">
+                            <h4>{{barang.judul|title}}</h4>
+                            <p>{{barang.harga | currency}}</p>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

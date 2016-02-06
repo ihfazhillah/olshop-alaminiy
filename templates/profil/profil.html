@@ -1,0 +1,86 @@
+{% extends "toko/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- ini untuk bagian kiri, yaitu deskripsi dan alamat -->
+        <div class="col-md-6 text-center">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>{{profil.deskripsi}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row-md-12">
+                    <p>{{profil.alamat}}</p>
+                </div>
+            </div>
+        </div>
+        <!-- judul, tagline, phone, social, email -->
+        <div class="col-md-6 text-right">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>{{profil.nama}}</h1>
+                    <h4>{{profil.tagline}}</h4>
+                </div>
+            </div>
+            <!--phone-->
+            <div class="row">
+                <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Phone</div>
+                    <div class="panel-body">
+                    <table class="table">
+                    
+                    {% for phone in profil.phone_set.all %}
+                    <tr>
+                    <td>{{ phone.nomor }}
+                    {{ phone.get_tipe_display }}</td></tr>
+                    {% endfor %}
+                    
+                    </table>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <!--social-->
+            <div class="row">
+                <div class="col-md-12">
+                <div class="panel panel-default">
+                <div class="panel-heading">Social Media</div>
+                <div class="panel-body">
+                <table class="table">
+                    
+                    {% for social in profil.socialmedia_set.all %}
+                    <tr>
+                    <td><a href="{{social.url}}">{{social.provider}}</a></td></tr>
+                    {% endfor %}
+                    
+                    </table>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+                    <!--email-->
+            <div class="row">
+                <div class="col-md-12">
+                <div class="panel panel-default">
+                <div class="panel-heading">Social Media</div>
+                <div class="panel-body">
+                <table class="table">
+                    
+                    {% for email in profil.email_set.all %}
+                    <tr>
+                    <td><a href="mailto:{{email.alamat}}">{{email.alamat}}</a></td></tr>
+                    {% endfor %}
+                    
+                    </table>
+                    </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

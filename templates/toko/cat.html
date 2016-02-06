@@ -1,0 +1,7 @@
+{% if cats %}
+    <ul class="dropdown-menu">
+        {% for category in cats %}
+            <li><a href="{% url 'kategori_barang' category.slug %}">{{category.nama|title}}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}

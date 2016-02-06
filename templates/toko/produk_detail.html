@@ -1,0 +1,86 @@
+{% extends "toko/base.html" %}
+{% block title %}{{barang.judul|title}}{% endblock %}
+{% block content %}
+{% load toko_extras %}
+<div class="container">
+    <!--judul-->
+    <div class="row">
+        <div class="col-md-12 text-center" style="margin-bottom:30px;">
+            <h3>{{barang.judul | title}}</h3>
+            <p class="text-danger">*klik gambar untuk memperbesar gambar</p>
+        </div>
+    </div>
+    <!-- end judul -->
+    <!-- gambar, detail dsb -->
+    <div class="row text-center">
+        <div class="col-md-6">
+            <div class="panel panel-hitam">
+                <div class="panel-heading">Ikhtisar</div>
+                <div class="panel-body"><p>{{barang.ikhtisar}}</p></div>
+            </div>
+
+            <div class="panel panel-hitam">
+                <div class="panel-heading">Harga</div>
+                <div class="panel-body"><p>{{barang.harga | currency}}</p></div>
+            </div>
+
+            <div class="panel panel-hitam">
+                <div class="panel-heading">Detail</div>
+                <div class="panel-body">
+                <table class="table">
+                {% for detil in barang.atribut_set.all %}
+                    <tr>
+                        <td>{{ detil.nama|title }}</td>
+                        <td>{{ detil.isi|title }}</td>
+        
+                    </tr>
+                {% endfor %}
+                </table>
+                </div>
+            </div>
+
+            
+            <div class="panel panel-hitam">
+                <div class="panel-heading">Kategori Barang</div>
+                <div class="panel-body">
+                    {% for kategori in barang.kategori.all %}
+                    <a href="{% url 'kategori_barang' kategori.slug %}" class="btn btn-primary btn-sm">{{kategori.nama|title}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" >
+            <div class="col-md-12" style="margin-bottom:20px;">
+                {% with barang.gambar_set.all|first as img %}
+                
+                <img src="{{img.image.thumbnail.250x300}}" class="img-responsive img-thumbnail" ></a>
+
+                
+                {% endwith %}
+            </div>
+            {% for img in barang.gambar_set.all %}
+            <div class="col-md-4">
+                <a href="#{{img.image.name}}" >
+
+                <img src="{{ img.image.thumbnail.100x100}}" class="img-responsive thumbnail" data-toggle="modal" data-target="#{{img.id}}"></a>
+                
+            </div>
+            <div class="modal fade" id="{{img.id}}">
+                    <div class="modal-dialog modal-default" role="document" tab-index="-1">
+                        
+                        <div class="modal-content">
+                            <div class="modal-header" data-dismiss="modal">
+                                <h4 class="text-danger text-uppercase">Klik disini untuk close</h4>
+                            </div>
+                            <div class="modal-body">
+                            <img src="{{img.image.thumbnail.500x600}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

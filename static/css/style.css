@@ -1,0 +1,25 @@
+.img-logo{
+    margin-top:20px;
+}
+.text-top {
+    margin-top: 20px;
+}
+.slide-img{
+    max-height:50%;
+}
+.gambar{
+    
+    -moz-transform:rotate(90deg);
+    transform:rotate(90deg);
+}
+
+.judul-halaman{
+    color : #333 ;
+}
+.panel-hitam{
+    border-color: #333;
+}
+.panel-hitam > .panel-heading{
+    background-color: #333;
+    color:white;
+}

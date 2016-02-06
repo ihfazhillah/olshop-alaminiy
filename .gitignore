@@ -1,0 +1,8 @@
+*.pyc
+db.*
+alaminiy/__pycache__
+toko/__pycache__
+profil/__pycache__
+toko/migrations
+profil/migrations
+media/

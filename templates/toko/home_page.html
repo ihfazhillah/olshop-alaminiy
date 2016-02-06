@@ -1,0 +1,44 @@
+
+{% extends "toko/base.html" %}
+{% block content %}
+{% load staticfiles %}
+{% load toko_extras %}
+<content>
+<div class="container">
+<div class="row">
+    <div class="panel panel-hitam">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Paling Baru</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% for b in barang %}
+    <div class="col-md-3 text-center align-center">
+                    
+                    <div class="panel-body">
+                    
+                    
+                    {% with b.gambar_set.all|first as img %}
+                    <img src="{{ img.image.crop.300x450 }}" alt="{{img.image.name}}" class="img-thumbnail img-rounded"  >
+                    {% endwith %}
+                    <a href="{% url 'produk_detail' barang_slug=b.slug %}">
+                    <div class="caption">
+                    <h5>{{ b.judul|title }}</h5>
+                    <p>{{b.harga|currency}}</p>
+                    </div>
+                    </div>
+                    </a>
+                    
+                
+                </div>
+                {% endfor %}
+    </div>
+</div>
+</div>
+</div>
+</content>
+
+{% endblock %}
