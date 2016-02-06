@@ -9,8 +9,8 @@ def dapatkan_semua_kategori():
     return {"cats":Kategori.objects.all()}
 
 @register.inclusion_tag("profil/head.html")
-def dapatkan_profil(slug):
-    return {"profil":Profil.objects.get(slug=slug)}
+def dapatkan_profil():
+    return {"profil":Profil.objects.first()}
 
 @register.filter
 def currency(value):

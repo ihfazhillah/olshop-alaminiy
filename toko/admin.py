@@ -2,7 +2,7 @@ from django.contrib import admin
 from toko.models import Kategori, Barang, Atribut, Gambar
 # from sorl.thumbnail.admin import AdminImageMixin 
 # Register your models here.
-from profil.models import Profil, Phone, SocialMedia, Email, Provider
+from profil.models import Profil, Phone, SocialMedia, Email
 
 class AtributInline(admin.TabularInline):
     model = Atribut

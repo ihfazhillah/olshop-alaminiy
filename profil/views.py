@@ -1,4 +1,6 @@
 from django.shortcuts import render,redirect
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from profil.models import Profil
 from profil.forms import ProfilForm, PhoneFormSet
 # Create your views here.
@@ -23,4 +25,8 @@ def profil_edit(request):
         form = ProfilForm(instance=profilfirst)
         phone_formset = PhoneFormSet(instance=profilfirst)
     context = {"form":form, 'phone':phone_formset}
-    return render(request, "profil/profil_edit.html", context )        
+    return render(request, "profil/profil_edit.html", context )
+
+@api_view(['GET'])
+def profil_api(request):
+    return Response("hello")        

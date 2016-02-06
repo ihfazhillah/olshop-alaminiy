@@ -47,10 +47,3 @@ class Email(models.Model):
     def __str__(self):
         return self.alamat
 
-class Provider(models.Model):
-    email = models.ManyToManyField(Email, default='')
-    nama = models.CharField(max_length=125, default='')
-    url = models.URLField(default="")
-
-    def __str__(self):
-        return self.nama
