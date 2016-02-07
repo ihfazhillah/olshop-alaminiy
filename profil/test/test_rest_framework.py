@@ -13,8 +13,7 @@ class ProfilDRFTest(APITestCase):
                               alamat="alamat")
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
                                       email='')
-        # phone = Phone.objects.create(profil = profil, nomor='123456', tipe='p')
-        # phonesecond = Phone.objects.create(profil=profil, nomor='54321', tipe='s')
+        
 
     def test_can_retrieve_first_object_and_return_200_status_code(self):
         response = self.client.get(reverse('profil-api'))

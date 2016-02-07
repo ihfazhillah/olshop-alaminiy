@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'toko.apps.TokoConfig',
     'versatileimagefield',
     'profil.apps.ProfilConfig',
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'rest_framework'
 ]
 
 MIDDLEWARE_CLASSES = [
