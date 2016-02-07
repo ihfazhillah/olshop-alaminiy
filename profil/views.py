@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import permissions
 from profil.models import Profil
 from profil.forms import ProfilForm, PhoneFormSet
 from profil.serializers import ProfilSerializer
@@ -28,9 +29,16 @@ def profil_edit(request):
     context = {"form":form, 'phone':phone_formset}
     return render(request, "profil/profil_edit.html", context )
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
+@permission_classes([permissions.IsAuthenticatedOrReadOnly,])
 def profil_api(request):
     profil = Profil.objects.first()
     if request.method == "GET":
         serializer = ProfilSerializer(profil)
-        return Response(serializer.data)      
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = ProfilSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
