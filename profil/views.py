@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions, status
 from profil.models import Profil
 from profil.forms import ProfilForm, PhoneFormSet
-from profil.serializers import ProfilSerializer
+from profil.serializers import ProfilSerializer, PhoneSerializer
 # Create your views here.
 def profil(request):
     profil = Profil.objects.first()
@@ -37,8 +37,10 @@ def profil_api(request):
         serializer = ProfilSerializer(instance=profil)
         return Response(serializer.data)
     elif request.method == "PUT":
-        serializer = ProfilSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
+        profilserializer = ProfilSerializer(profil, data =request.data)
+        phoneserializer = PhoneSerializer(profil, data=request.data)
+
+        if profilserializer.is_valid():
+            profilserializer.save()
+            return Response(profilserializer.data)
+        return Response(profilserializer.errors, status=status.HTTP_400_BAD_REQUEST)      

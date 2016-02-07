@@ -11,6 +11,7 @@ class ProfilDRFTest(APITestCase):
                               tagline="tagline",
                               deskripsi="deskripsi",
                               alamat="alamat")
+        Phone.objects.create(profil=profil, nomor='9087', tipe='p')
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
                                       email='')
         self.data_without_phone = {'nama':'nama',
@@ -24,7 +25,7 @@ class ProfilDRFTest(APITestCase):
     def test_can_retrieve_first_object_as_expected(self):
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
         'alamat':'alamat',
-        'phone':[]}
+        'phone_set':[]}
         response = self.client.get(reverse('profil-api'))
         # print(dict(response.data))
         self.assertEqual(dict(response.data), expected)
@@ -48,6 +49,17 @@ class ProfilDRFTest(APITestCase):
         response = self.client.put(reverse('profil-api'), {'nama':'nama'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_edit_profil_with_number_phone(self):
+        
+        self.client.login(username='sakkuun', password='sakkuun1234')
+        data = self.data_without_phone 
+        data= {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
+        'alamat':'alamat','phone_set':[
+        {'id':1, 'nomor':'78963', 'tipe':'p'}]}
+        
+        response = self.client.put(reverse('profil-api'), data)
+        self.assertEqual(dict(response.data), data)
+
 class ProfilSerializerClass(APITestCase):
 
     def test_can_serializer_the_input(self):
@@ -59,7 +71,7 @@ class ProfilSerializerClass(APITestCase):
         
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
                     'alamat':'alamat',
-                    'phone':
+                    'phone_set':
                     [{'nomor':'123456', 'tipe':'p'},
                     {'nomor':'54321','tipe':'s'}]}
 
