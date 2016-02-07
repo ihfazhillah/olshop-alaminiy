@@ -17,8 +17,8 @@ class ProfilSerializerClass(APITestCase):
 
     def test_can_serializer_the_input(self):
         profil = Profil(nama="nama", tagline="tagline", 
-                                      deskripsi="deskirpsi", alamat="alamat")
+                                      deskripsi="deskripsi", alamat="alamat")
         serializer = ProfilSerializer(profil)
-        
-        # assert serializer.data == {"nama":"nama", "tagline":"tagline",
-        #                  "deskripsi":"deskripsi", "alamat":"alamat"}
+        expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
+                    'alamat':'alamat'}
+        self.assertEqual(dict(serializer.data), expected)
