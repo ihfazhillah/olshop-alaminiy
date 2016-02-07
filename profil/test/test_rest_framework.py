@@ -1,26 +1,31 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from rest_framework import status
-from profil.models import Profil
+from profil.models import Profil, Phone
 from profil.serializers import ProfilSerializer
 from django.contrib.auth.models import User
 
 class ProfilDRFTest(APITestCase):
     def setUp(self):
-        Profil.objects.create(nama="nama",
+        profil = Profil.objects.create(nama="nama",
                               tagline="tagline",
                               deskripsi="deskripsi",
                               alamat="alamat")
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
                                       email='')
+        # phone = Phone.objects.create(profil = profil, nomor='123456', tipe='p')
+        # phonesecond = Phone.objects.create(profil=profil, nomor='54321', tipe='s')
+
     def test_can_retrieve_first_object_and_return_200_status_code(self):
         response = self.client.get(reverse('profil-api'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_can_retrieve_first_object_as_expected(self):
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
-        'alamat':'alamat'}
+        'alamat':'alamat',
+        'phone':[]}
         response = self.client.get(reverse('profil-api'))
+        # print(dict(response.data))
         self.assertEqual(dict(response.data), expected)
 
     def test_cant_create_new_profil_with_login(self):
@@ -51,9 +56,17 @@ class ProfilDRFTest(APITestCase):
 class ProfilSerializerClass(APITestCase):
 
     def test_can_serializer_the_input(self):
-        profil = Profil(nama="nama", tagline="tagline", 
+        profil = Profil.objects.create(nama="nama", tagline="tagline", 
                                       deskripsi="deskripsi", alamat="alamat")
-        serializer = ProfilSerializer(profil)
+        # Phone.objects.create(profil=profil, nomor="123456", tipe="p")
+        phone = Phone.objects.create(profil = profil, nomor='123456', tipe='p')
+        phonesecond = Phone.objects.create(profil=profil, nomor='54321', tipe='s')
+        serializer = ProfilSerializer(instance=profil)
+        # print(dict(serializer.data))
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
-                    'alamat':'alamat'}
+                    'alamat':'alamat',
+                    'phone':
+                    [{'nomor':'123456', 'tipe':'p'},
+                    {'nomor':'54321','tipe':'s'}]}
+
         self.assertEqual(dict(serializer.data), expected)

@@ -34,7 +34,7 @@ def profil_edit(request):
 def profil_api(request):
     profil = Profil.objects.first()
     if request.method == "GET":
-        serializer = ProfilSerializer(profil)
+        serializer = ProfilSerializer(instance=profil)
         return Response(serializer.data)
     elif request.method == "PUT":
         serializer = ProfilSerializer(data = request.data)
