@@ -9,7 +9,7 @@ class ProfilDRFTest(APITestCase):
         Profil.objects.create(nama="nama",
                               tagline="tagline",
                               deskripsi="deskripsi",
-                              alamat="")
+                              alamat="alamat")
     def test_can_retrieve_first_object_and_return_200_status_code(self):
         response = self.client.get(reverse('profil-api'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)

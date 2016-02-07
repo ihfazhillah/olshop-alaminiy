@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from profil.models import Profil
 from profil.forms import ProfilForm, PhoneFormSet
+from profil.serializers import ProfilSerializer
 # Create your views here.
 def profil(request):
     profil = Profil.objects.first()
@@ -29,4 +30,7 @@ def profil_edit(request):
 
 @api_view(['GET'])
 def profil_api(request):
-    return Response("hello")        
+    profil = Profil.objects.first()
+    if request.method == "GET":
+        serializer = ProfilSerializer(profil)
+        return Response(serializer.data)      
