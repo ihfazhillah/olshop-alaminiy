@@ -43,6 +43,10 @@ class ProfilDRFTest(APITestCase):
                                     'tagline':'tagline'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_if_user_put_wrong_data_it_return_bad_request_status(self):
+        self.client.login(username='sakkuun', password='sakkuun1234')
+        response = self.client.put(reverse('profil-api'), {'nama':'nama'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 class ProfilSerializerClass(APITestCase):
 
