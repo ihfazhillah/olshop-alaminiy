@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from rest_framework import status
 from profil.models import Profil
+from profil.serializers import ProfilSerializer
 
 class ProfilDRFTest(APITestCase):
     def test_can_retrieve_first_object_and_return_200_status_code(self):
@@ -15,7 +16,8 @@ class ProfilDRFTest(APITestCase):
 class ProfilSerializerClass(APITestCase):
 
     def test_can_serializer_the_input(self):
-        serializer = ProfilSerializer(nama="nama", tagline="tagline", 
-                                      deskripsi="deskirpsi")
+        profil = Profil(nama="nama", tagline="tagline", 
+                                      deskripsi="deskirpsi", alamat="alamat")
+        serializer = ProfilSerializer(profil)
         self.assertEqual(serializer.data, {"nama":"nama", "tagline":"tagline",
-                         "deskripsi":"deskripsi"})
+                         "deskripsi":"deskripsi", "alamat":"alamat"})
