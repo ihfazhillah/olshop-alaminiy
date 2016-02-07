@@ -13,7 +13,9 @@ class ProfilDRFTest(APITestCase):
                               alamat="alamat")
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
                                       email='')
-        
+        self.data_without_phone = {'nama':'nama',
+                                    'alamat':'alamat', 'deskripsi':'deskripsi',
+                                    'tagline':'tagline'}
 
     def test_can_retrieve_first_object_and_return_200_status_code(self):
         response = self.client.get(reverse('profil-api'))
@@ -29,22 +31,16 @@ class ProfilDRFTest(APITestCase):
 
     def test_cant_create_new_profil_with_login(self):
         self.client.login(username='sakkuun', password='sakkuun1234')
-        response = self.client.post(reverse('profil-api'), {'nama':'nama',
-                                    'alamat':'alamat', 'deskripsi':'deskripsi',
-                                    'tagline':'tagline'})
+        response = self.client.post(reverse('profil-api'), self.data_without_phone)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_cant_create_new_profil_without_login_and_return_404_forbiden(self):
-        response = self.client.post(reverse('profil-api'), {'nama':'nama',
-                                    'alamat':'alamat', 'deskripsi':'deskripsi',
-                                    'tagline':'tagline'})
+        response = self.client.post(reverse('profil-api'), self.data_without_phone)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
     def test_cant_edit_profil_if_not_user(self):
-        response = self.client.put(reverse('profil-api'), {'nama':'nama',
-                                    'alamat':'alamat', 'deskripsi':'deskripsi',
-                                    'tagline':'tagline'})
+        response = self.client.put(reverse('profil-api'), self.data_without_phone)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_if_user_put_wrong_data_it_return_bad_request_status(self):
@@ -57,11 +53,10 @@ class ProfilSerializerClass(APITestCase):
     def test_can_serializer_the_input(self):
         profil = Profil.objects.create(nama="nama", tagline="tagline", 
                                       deskripsi="deskripsi", alamat="alamat")
-        # Phone.objects.create(profil=profil, nomor="123456", tipe="p")
         phone = Phone.objects.create(profil = profil, nomor='123456', tipe='p')
         phonesecond = Phone.objects.create(profil=profil, nomor='54321', tipe='s')
         serializer = ProfilSerializer(instance=profil)
-        # print(dict(serializer.data))
+        
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
                     'alamat':'alamat',
                     'phone':
