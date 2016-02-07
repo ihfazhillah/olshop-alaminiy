@@ -20,6 +20,18 @@ class ProfilDRFTest(APITestCase):
         response = self.client.get(reverse('profil-api'))
         self.assertEqual(dict(response.data), expected)
 
+    def test_cant_create_new_profil(self):
+        response = self.client.post(reverse('profil-api'), {'nama':'nama',
+                                    'alamat':'alamat', 'deskripsi':'deskripsi',
+                                    'tagline':'tagline'})
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cant_edit_profil_if_not_user(self):
+        response = self.client.post(reverse('profil-api'), {'nama':'nama',
+                                    'alamat':'alamat', 'deskripsi':'deskripsi',
+                                    'tagline':'tagline'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class ProfilSerializerClass(APITestCase):
 
