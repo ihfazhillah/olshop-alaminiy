@@ -24,7 +24,7 @@ class SocialMedia(models.Model):
         return self.provider
 
 class Phone(models.Model):
-    profil = models.ForeignKey(Profil, default='', related_name="phone")
+    profil = models.ForeignKey(Profil, default=1, related_name="phone")
     nomor = models.CharField(max_length=20, default='')
     TIPE_CHOICE = (
                    ("p", "primary"),

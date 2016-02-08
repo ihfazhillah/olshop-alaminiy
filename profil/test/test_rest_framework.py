@@ -14,7 +14,7 @@ class ProfilDRFTest(APITestCase):
         Phone.objects.create(profil=profil, nomor='9087', tipe='p')
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
                                       email='')
-        self.data_without_phone = {'nama':'nama',
+        self.data_without_phone = {'nama':'nama','id':1,
                                     'alamat':'alamat', 'deskripsi':'deskripsi',
                                     'tagline':'tagline'}
 
@@ -23,7 +23,7 @@ class ProfilDRFTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_can_retrieve_first_object_as_expected(self):
-        expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
+        expected = {'id':1,'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
         'alamat':'alamat',
         'phone':[{
         'id':1, 'nomor':'9087', 'tipe':'p'}]}
@@ -54,11 +54,12 @@ class ProfilDRFTest(APITestCase):
         
         self.client.login(username='sakkuun', password='sakkuun1234')
         data = self.data_without_phone 
-        data= {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
-        'alamat':'alamat','phone':[
-        {'id':1, 'nomor':'78963', 'tipe':'p'}]}
+        data.update({'phone':[
+                    {'id':1, 'nomor':'1234', 'tipe':'s'},
+                     {'id':3, 'nomor':'1234', 'tipe':'s'}
+                    ]})
         
-        response = self.client.put(reverse('profil-api'), data)
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(dict(response.data), data)
 
 class ProfilSerializerClass(APITestCase):
@@ -70,7 +71,7 @@ class ProfilSerializerClass(APITestCase):
         phonesecond = Phone.objects.create(profil=profil, nomor='54321', tipe='s')
         serializer = ProfilSerializer(instance=profil)
         
-        expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
+        expected = {'id':1,'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
                     'alamat':'alamat',
                     'phone':
                     [{'id':1, 'nomor':'123456', 'tipe':'p'},
