@@ -8,7 +8,7 @@ class PhoneSerializer(serializers.ModelSerializer):
 
 
 class ProfilSerializer(serializers.ModelSerializer):
-    phone_set = PhoneSerializer(many=True)
+    phone = PhoneSerializer(many=True)
 
     class Meta:
         model = Profil
@@ -20,7 +20,7 @@ class ProfilSerializer(serializers.ModelSerializer):
     #     print(validated_data)
     def update(self, instance, validated_data):
         print(validated_data)
-        phones_data = validated_data.pop('phone_set')
+        phones_data = validated_data.pop('phone')
         profil = Profil(**validated_data)
         profil.save()
         for phone_data in phones_data:

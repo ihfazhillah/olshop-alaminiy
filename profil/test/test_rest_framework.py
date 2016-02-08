@@ -25,7 +25,8 @@ class ProfilDRFTest(APITestCase):
     def test_can_retrieve_first_object_as_expected(self):
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
         'alamat':'alamat',
-        'phone_set':[]}
+        'phone':[{
+        'nomor':'9087', 'tipe':'p'}]}
         response = self.client.get(reverse('profil-api'))
         # print(dict(response.data))
         self.assertEqual(dict(response.data), expected)
@@ -54,7 +55,7 @@ class ProfilDRFTest(APITestCase):
         self.client.login(username='sakkuun', password='sakkuun1234')
         data = self.data_without_phone 
         data= {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
-        'alamat':'alamat','phone_set':[
+        'alamat':'alamat','phone':[
         {'id':1, 'nomor':'78963', 'tipe':'p'}]}
         
         response = self.client.put(reverse('profil-api'), data)
@@ -71,7 +72,7 @@ class ProfilSerializerClass(APITestCase):
         
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
                     'alamat':'alamat',
-                    'phone_set':
+                    'phone':
                     [{'nomor':'123456', 'tipe':'p'},
                     {'nomor':'54321','tipe':'s'}]}
 
