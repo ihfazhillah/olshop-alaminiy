@@ -31,7 +31,7 @@
                     <div class="panel-body">
                     <table class="table">
                     
-                    {% for phone in profil.phone_set.all %}
+                    {% for phone in profil.phone.all %}
                     <tr>
                     <td>{{ phone.nomor }}
                     {{ phone.get_tipe_display }}</td></tr>
@@ -50,7 +50,7 @@
                 <div class="panel-body">
                 <table class="table">
                     
-                    {% for social in profil.socialmedia_set.all %}
+                    {% for social in profil.socialmedia.all %}
                     <tr>
                     <td><a href="{{social.url}}">{{social.provider}}</a></td></tr>
                     {% endfor %}
@@ -68,7 +68,7 @@
                 <div class="panel-body">
                 <table class="table">
                     
-                    {% for email in profil.email_set.all %}
+                    {% for email in profil.email.all %}
                     <tr>
                     <td><a href="mailto:{{email.alamat}}">{{email.alamat}}</a></td></tr>
                     {% endfor %}

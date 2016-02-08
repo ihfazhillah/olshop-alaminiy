@@ -16,7 +16,7 @@ class Kontak(models.Model):
     pass
 
 class SocialMedia(models.Model):
-    profil = models.ForeignKey(Profil, default="")
+    profil = models.ForeignKey(Profil, default="", related_name="socialmedia")
     provider = models.CharField(max_length=100, default="")
     url = models.URLField(default="")
 
@@ -24,7 +24,7 @@ class SocialMedia(models.Model):
         return self.provider
 
 class Phone(models.Model):
-    profil = models.ForeignKey(Profil, default='')
+    profil = models.ForeignKey(Profil, default='', related_name="phone")
     nomor = models.CharField(max_length=20, default='')
     TIPE_CHOICE = (
                    ("p", "primary"),
@@ -40,7 +40,7 @@ class Email(models.Model):
                    ("p", "primary"),
                    ("s", "secondary")
                    )
-    profil = models.ForeignKey(Profil, default='')
+    profil = models.ForeignKey(Profil, default='', related_name='email')
     alamat = models.EmailField(default="")
     tipe = models.CharField(max_length=1, choices=TIPE_CHOICE, default='p')
 

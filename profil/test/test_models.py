@@ -50,11 +50,11 @@ class PhoneModelTest(TestCase):
                                        nomor=3241,
                                        tipe="p")
 
-        self.assertEqual(profil.phone_set.count(), 2)
-        self.assertEqual(profil.phone_set.first().nomor, "1234")
-        self.assertEqual(profil.phone_set.first().get_tipe_display(), "secondary")
-        self.assertEqual(profil.phone_set.all()[1].nomor, "3241")
-        self.assertEqual(profil.phone_set.all()[1].get_tipe_display(), "primary")
+        self.assertEqual(profil.phone.count(), 2)
+        self.assertEqual(profil.phone.first().nomor, "1234")
+        self.assertEqual(profil.phone.first().get_tipe_display(), "secondary")
+        self.assertEqual(profil.phone.all()[1].nomor, "3241")
+        self.assertEqual(profil.phone.all()[1].get_tipe_display(), "primary")
 
 class EmailModelTest(TestCase):
 
@@ -71,7 +71,7 @@ class EmailModelTest(TestCase):
                                        tipe="s",
                                        )
 
-        self.assertEqual(profil.email_set.count(), 2)
+        self.assertEqual(profil.email.count(), 2)
         self.assertEqual(email.profil.nama, profil.nama)
         self.assertEqual(email.alamat, "alamat1@coba.com")
         self.assertEqual(email.get_tipe_display(), "primary")
