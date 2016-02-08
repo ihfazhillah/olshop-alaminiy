@@ -26,7 +26,7 @@ class ProfilDRFTest(APITestCase):
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
         'alamat':'alamat',
         'phone':[{
-        'nomor':'9087', 'tipe':'p'}]}
+        'id':1, 'nomor':'9087', 'tipe':'p'}]}
         response = self.client.get(reverse('profil-api'))
         # print(dict(response.data))
         self.assertEqual(dict(response.data), expected)
@@ -73,7 +73,7 @@ class ProfilSerializerClass(APITestCase):
         expected = {'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
                     'alamat':'alamat',
                     'phone':
-                    [{'nomor':'123456', 'tipe':'p'},
-                    {'nomor':'54321','tipe':'s'}]}
+                    [{'id':1, 'nomor':'123456', 'tipe':'p'},
+                    {'id':2, 'nomor':'54321','tipe':'s'}]}
 
         self.assertEqual(dict(serializer.data), expected)

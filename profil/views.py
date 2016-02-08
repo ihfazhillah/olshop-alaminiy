@@ -39,8 +39,13 @@ def profil_api(request):
     elif request.method == "PUT":
         profilserializer = ProfilSerializer(profil, data =request.data)
         phoneserializer = PhoneSerializer(profil, data=request.data)
+        # print("request.data")
+        # print(request.data)
 
         if profilserializer.is_valid():
-            profilserializer.save()
-            return Response(profilserializer.data)
+            if phoneserializer.is_valid():
+                profilserializer.save()
+                phoneserializer.save()
+                return Response(profilserializer.data)
+            return Response(phoneserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(profilserializer.errors, status=status.HTTP_400_BAD_REQUEST)      
