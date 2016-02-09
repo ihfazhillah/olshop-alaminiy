@@ -20,7 +20,6 @@ class ProfilSerializer(serializers.ModelSerializer):
     
     
     def update(self, instance, validated_data):
-        print(validated_data)
         phones_data = validated_data.pop('phone')
         instance.nama = validated_data.get('nama', instance.nama)
         instance.tagline = validated_data.get('tagline', instance.tagline)

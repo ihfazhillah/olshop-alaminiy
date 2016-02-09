@@ -62,19 +62,3 @@ class ProfilDRFTest(APITestCase):
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(dict(response.data), data)
 
-class ProfilSerializerClass(APITestCase):
-
-    def test_can_serializer_the_input(self):
-        profil = Profil.objects.create(nama="nama", tagline="tagline", 
-                                      deskripsi="deskripsi", alamat="alamat")
-        phone = Phone.objects.create(profil = profil, nomor='123456', tipe='p')
-        phonesecond = Phone.objects.create(profil=profil, nomor='54321', tipe='s')
-        serializer = ProfilSerializer(instance=profil)
-        
-        expected = {'id':1,'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
-                    'alamat':'alamat',
-                    'phone':
-                    [{'id':1, 'nomor':'123456', 'tipe':'p'},
-                    {'id':2, 'nomor':'54321','tipe':'s'}]}
-
-        self.assertEqual(dict(serializer.data), expected)
