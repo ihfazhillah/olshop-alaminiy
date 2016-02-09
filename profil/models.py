@@ -25,12 +25,12 @@ class SocialMedia(models.Model):
 
 class Phone(models.Model):
     profil = models.ForeignKey(Profil, default=1, related_name="phone")
-    nomor = models.CharField(max_length=20, default='')
+    nomor = models.CharField(max_length=20)
     TIPE_CHOICE = (
                    ("p", "primary"),
                    ("s", "secondary")
                    )
-    tipe = models.CharField(max_length=1, choices=TIPE_CHOICE, default="p")
+    tipe = models.CharField(max_length=1, choices=TIPE_CHOICE)
 
     def __str__(self):
         return str(self.nomor)

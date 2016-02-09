@@ -27,13 +27,12 @@ class PhoneSerializerTest(APITestCase):
     def test_with_missing_nomor(self):
         self.valid_data.pop('nomor')
         serializer = PhoneSerializer(data=self.valid_data)
-        # print(serializer.is_valid())
-        # self.assertFalse(serializer.is_valid())
-        serializer.is_valid()
-        print(serializer.validated_data)
-        print(serializer.errors)
-        self.fail("wondering, why is_valid() return true with missing argument")
+        self.assertFalse(serializer.is_valid())
 
+    def test_with_missing_tipe(self):
+        self.valid_data.pop('tipe')
+        serializer = PhoneSerializer(data=self.valid_data)
+        self.assertFalse(serializer.is_valid())
     
 class EmailSerializerTest(APITestCase):
 
