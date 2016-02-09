@@ -1,5 +1,38 @@
 from rest_framework.test import APITestCase
 from profil.serializers import ProfilSerializer
+from profil.serializers import PhoneSerializer
+
+def assert_serializer_with_missing_key(serializerclass, basedata, key):
+    basedata.pop(key)
+    serializer = serializerclass(data=basedata)
+    assert serializer.is_valid() == False
+    assert serializer.validated_data == {}
+    assert dict(serializer.errors) == {key:['This field is required.']}
+
+class PhoneSerializerTest(APITestCase):
+
+    def setUp(self):
+        self.valid_data = {'id':1, 'nomor':'1234', 'tipe':'p'}
+
+    def test_with_valid_data(self):
+        serializer = PhoneSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), self.valid_data)
+        self.assertEqual(dict(serializer.errors), {})
+
+    def test_with_missing_id(self):
+        assert_serializer_with_missing_key(PhoneSerializer, self.valid_data, 'id')
+
+    def test_with_missing_nomor(self):
+        self.valid_data.pop('nomor')
+        serializer = PhoneSerializer(data=self.valid_data)
+        # print(serializer.is_valid())
+        # self.assertFalse(serializer.is_valid())
+        serializer.is_valid()
+        print(serializer.validated_data)
+        print(serializer.errors)
+
+    
 
 class ProfilSerializerClass(APITestCase):
 

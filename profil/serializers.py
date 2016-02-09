@@ -5,7 +5,7 @@ class PhoneSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Phone
-        fields = ('id', 'nomor', 'tipe')
+        exclude = ('profil',)
         extra_kwargs = {
         'id':{'read_only':False}
         }
