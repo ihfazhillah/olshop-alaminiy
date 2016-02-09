@@ -70,7 +70,8 @@ class ProfilSerializerClass(APITestCase):
                            'deskripsi':'deskripsi','alamat':'alamat',
                            'phone':[
                            {'id':1, 'nomor':'123456', 'tipe':'p'},
-                          ]}
+                          ],
+                          'email':[{'id':1,'alamat':'email@ku.it', 'tipe':'p'}]}
 
     def test_with_valid_data(self):
         serializer = ProfilSerializer(data=self.valid_data)
@@ -92,6 +93,9 @@ class ProfilSerializerClass(APITestCase):
     def test_with_missing_alamat(self):
         self.assert_with_missing_key('alamat')
 
+    def test_with_missing_email(self):
+        self.assert_with_missing_key('email')
+
     def test_with_partial_update(self):
         self.valid_data.pop('deskripsi')
         serializer = ProfilSerializer(data=self.valid_data, partial=True)
@@ -103,3 +107,8 @@ class ProfilSerializerClass(APITestCase):
         serializer = ProfilSerializer(self.valid_data)
         phone_data = dict(serializer.data).pop('phone')
         self.assertTrue(isinstance(phone_data, list))
+
+    def test_email_data_type_is_list(self):
+        serializer = ProfilSerializer(self.valid_data)
+        email_data = dict(serializer.data).pop('email')
+        self.assertTrue(isinstance(email_data, list))

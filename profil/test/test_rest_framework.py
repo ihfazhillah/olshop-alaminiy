@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from rest_framework import status
-from profil.models import Profil, Phone
+from profil.models import Profil, Phone, Email
 from profil.serializers import ProfilSerializer
 from django.contrib.auth.models import User
 
@@ -12,6 +12,7 @@ class ProfilDRFTest(APITestCase):
                               deskripsi="deskripsi",
                               alamat="alamat")
         Phone.objects.create(profil=profil, nomor='9087', tipe='p')
+        Email.objects.create(profil=profil, alamat='email@ku.com', tipe='p')
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
                                       email='')
         self.data_without_phone = {'nama':'nama','id':1,
@@ -26,7 +27,8 @@ class ProfilDRFTest(APITestCase):
         expected = {'id':1,'nama':'nama', 'tagline':'tagline', 'deskripsi':'deskripsi',
         'alamat':'alamat',
         'phone':[{
-        'id':1, 'nomor':'9087', 'tipe':'p'}]}
+        'id':1, 'nomor':'9087', 'tipe':'p'}],
+        'email': [{'id': 1,'alamat': 'email@ku.com','tipe': 'p'}]}
         response = self.client.get(reverse('profil-api'))
         # print(dict(response.data))
         self.assertEqual(dict(response.data), expected)
@@ -53,11 +55,15 @@ class ProfilDRFTest(APITestCase):
     def test_edit_profil_with_number_phone(self):
         
         self.client.login(username='sakkuun', password='sakkuun1234')
-        data = self.data_without_phone 
-        data.update({'phone':[
+        data = {'nama':'nama','id':1,
+                    'alamat':'alamat', 'deskripsi':'deskripsi',
+                    'tagline':'tagline',
+                    'phone':[
                     {'id':1, 'nomor':'1234', 'tipe':'s'},
                      {'id':3, 'nomor':'1234', 'tipe':'s'}
-                    ]})
+                    ],
+                    'email': [{'id': 1,'alamat': 'email@ku.com','tipe': 'p'}]
+                    }
         
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(dict(response.data), data)
