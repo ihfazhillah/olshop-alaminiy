@@ -41,8 +41,8 @@ class Email(models.Model):
                    ("s", "secondary")
                    )
     profil = models.ForeignKey(Profil, default='', related_name='email')
-    alamat = models.EmailField(default="")
-    tipe = models.CharField(max_length=1, choices=TIPE_CHOICE, default='p')
+    alamat = models.EmailField()
+    tipe = models.CharField(max_length=1, choices=TIPE_CHOICE)
 
     def __str__(self):
         return self.alamat

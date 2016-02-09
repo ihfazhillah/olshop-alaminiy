@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from profil.models import Profil, Phone
+from profil.models import Profil, Phone, Email
+
+class EmailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Email
+        exclude = ('profil',)
+        extra_kwargs = {'id':{'read_only':False}}
 
 class PhoneSerializer(serializers.ModelSerializer):
 

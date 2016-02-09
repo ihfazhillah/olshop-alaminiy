@@ -1,13 +1,14 @@
 from rest_framework.test import APITestCase
 from profil.serializers import ProfilSerializer
 from profil.serializers import PhoneSerializer
-
+from profil.serializers import EmailSerializer
 def assert_serializer_with_missing_key(serializerclass, basedata, key):
     basedata.pop(key)
     serializer = serializerclass(data=basedata)
     assert serializer.is_valid() == False
     assert serializer.validated_data == {}
     assert dict(serializer.errors) == {key:['This field is required.']}
+
 
 class PhoneSerializerTest(APITestCase):
 
@@ -31,8 +32,29 @@ class PhoneSerializerTest(APITestCase):
         serializer.is_valid()
         print(serializer.validated_data)
         print(serializer.errors)
+        self.fail("wondering, why is_valid() return true with missing argument")
 
     
+class EmailSerializerTest(APITestCase):
+
+    def test_with_valid_data(self):
+        data = {'id':1, 'alamat':'email@email.com', 'tipe':'p'}
+        serializer = EmailSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), data)
+        self.assertEqual(dict(serializer.errors), {})
+
+    def test_with_missing_alamat(self):
+        data = {'id':1, 'tipe':'p'}
+        serializer = EmailSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(dict(serializer.errors), {'alamat':['This field is required.']})
+
+    def test_with_missing_tipe(self):
+        data = {'id':1, 'alamat':'alamat@email.ku'}
+        serializer = EmailSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(dict(serializer.errors), {'tipe' : ['This field is required.']})
 
 class ProfilSerializerClass(APITestCase):
 
