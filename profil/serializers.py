@@ -1,12 +1,24 @@
 from rest_framework import serializers
-from profil.models import Profil, Phone, Email
+from profil.models import Profil, Phone, Email, SocialMedia
+
+class SocialSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SocialMedia
+        exclude = ['profil']
+        extra_kwargs = {'id':{'read_only':False},
+                        }
+
+   
+
 
 class EmailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Email
         exclude = ('profil',)
-        extra_kwargs = {'id':{'read_only':False}}
+        extra_kwargs = {'id':{'read_only':False},
+                        }
 
 class PhoneSerializer(serializers.ModelSerializer):
 
@@ -20,16 +32,19 @@ class PhoneSerializer(serializers.ModelSerializer):
 class ProfilSerializer(serializers.ModelSerializer):
     phone = PhoneSerializer(many=True)
     email = EmailSerializer(many=True)
+    socialmedia = SocialSerializer(many=True)
 
     class Meta:
         model = Profil
         
-        fields = ("id", "nama", "tagline", "deskripsi","alamat", "phone", "email")
+        fields = ("id", "nama", "tagline", "deskripsi","alamat",
+         "phone", "email", 'socialmedia')
     
     
     def update(self, instance, validated_data):
         phones_data = validated_data.pop('phone')
         email_data = validated_data.pop('email')
+        
         instance.nama = validated_data.get('nama', instance.nama)
         instance.tagline = validated_data.get('tagline', instance.tagline)
         instance.deskripsi = validated_data.get('deskripsi', instance.deskripsi)

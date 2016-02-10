@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase
 from profil.serializers import ProfilSerializer
 from profil.serializers import PhoneSerializer
 from profil.serializers import EmailSerializer
+from profil.serializers import SocialSerializer
 
 
 
@@ -52,6 +53,29 @@ class EmailSerializerTest(APITestCase):
         self.assertFalse(serializer.is_valid())
         self.assertEqual(dict(serializer.errors), {'tipe' : ['This field is required.']})
 
+class SocialSerializerTest(APITestCase):
+    def test_with_valid_data(self):
+        data = {'id':1, 'provider':'facebook', 'url':'http://facebook.com'}
+        serializer = SocialSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), data)
+
+    def test_with_missing_id(self):
+        data = {'provider':'facebook', 'url':'http://facebook.com'}
+        serializer = SocialSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+
+    def test_with_missing_provider(self):
+        data = {'id':1, 'url':'http://facebook.com'}
+        serializer = SocialSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+
+    def test_with_missing_url(self):
+        data = {'id':1, 'provider':'facebook'}
+        serializer = SocialSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+
+
 class ProfilSerializerClass(APITestCase):
 
     def assert_with_missing_key(self, key):
@@ -68,7 +92,8 @@ class ProfilSerializerClass(APITestCase):
                            'phone':[
                            {'id':1, 'nomor':'123456', 'tipe':'p'},
                           ],
-                          'email':[{'id':1,'alamat':'email@ku.it', 'tipe':'p'}]}
+                          'email':[{'id':1,'alamat':'email@ku.it', 'tipe':'p'}],
+                          'socialmedia':[]}
 
     def test_with_valid_data(self):
         serializer = ProfilSerializer(data=self.valid_data)
@@ -92,6 +117,9 @@ class ProfilSerializerClass(APITestCase):
 
     def test_with_missing_email(self):
         self.assert_with_missing_key('email')
+
+    def test_with_missing_socialmedia(self):
+        self.assert_with_missing_key('socialmedia')
 
     def test_with_partial_update(self):
         self.valid_data.pop('deskripsi')

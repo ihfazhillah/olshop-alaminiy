@@ -17,11 +17,15 @@ class Kontak(models.Model):
 
 class SocialMedia(models.Model):
     profil = models.ForeignKey(Profil, default="", related_name="socialmedia")
-    provider = models.CharField(max_length=100, default="")
-    url = models.URLField(default="")
+    provider = models.CharField(max_length=100)
+    url = models.URLField()
 
     def __str__(self):
         return self.provider
+
+   
+
+
 
 class Phone(models.Model):
     profil = models.ForeignKey(Profil, default=1, related_name="phone")
