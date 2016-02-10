@@ -30,9 +30,9 @@ class PhoneSerializer(serializers.ModelSerializer):
         }
 
 class ProfilSerializer(serializers.ModelSerializer):
-    phone = PhoneSerializer(many=True)
-    email = EmailSerializer(many=True)
-    socialmedia = SocialSerializer(many=True)
+    phone = PhoneSerializer(many=True, required=False)
+    email = EmailSerializer(many=True, required=False)
+    socialmedia = SocialSerializer(many=True, required=False)
 
     class Meta:
         model = Profil
@@ -44,7 +44,7 @@ class ProfilSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         phones_data = validated_data.pop('phone')
         email_data = validated_data.pop('email')
-        
+
         instance.nama = validated_data.get('nama', instance.nama)
         instance.tagline = validated_data.get('tagline', instance.tagline)
         instance.deskripsi = validated_data.get('deskripsi', instance.deskripsi)

@@ -100,9 +100,6 @@ class ProfilSerializerClass(APITestCase):
         self.assertTrue(serializer.is_valid())
         self.assertEqual(dict(serializer.validated_data) , self.valid_data)
 
-    def test_with_missing_phone(self):
-        self.assert_with_missing_key('phone')
-
     def test_with_missing_nama(self):
         self.assert_with_missing_key('nama')
 
@@ -115,11 +112,24 @@ class ProfilSerializerClass(APITestCase):
     def test_with_missing_alamat(self):
         self.assert_with_missing_key('alamat')
 
+    def test_with_missing_phone(self):
+        self.valid_data.pop('phone')
+        serializer = ProfilSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), self.valid_data)
+
+
     def test_with_missing_email(self):
-        self.assert_with_missing_key('email')
+        self.valid_data.pop('email')
+        serializer = ProfilSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), self.valid_data)
 
     def test_with_missing_socialmedia(self):
-        self.assert_with_missing_key('socialmedia')
+        self.valid_data.pop('socialmedia')
+        serializer = ProfilSerializer(data=self.valid_data)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), self.valid_data)
 
     def test_with_partial_update(self):
         self.valid_data.pop('deskripsi')
