@@ -37,7 +37,21 @@ class ProfilSerializer(serializers.ModelSerializer):
         fields = ("id", "nama", "tagline", "deskripsi","alamat",
          "phone", "email", 'socialmedia')
     
-    # def validate_socialmedia(self, value):
+    def processing_nested_data(self, model, validated_data, instance):
+        for socialmedia in validated_data:
+            socials = model.objects.all()
+            socials_id = [s.id for s in socials]
+            if socialmedia.get('id', '') not in socials_id:
+                if not socialmedia.__contains__('provider') :
+                    raise serializers.ValidationError("Provider field harus ada ketika membuat field baru.")
+                elif not socialmedia.__contains__('url'):
+                    raise serializers.ValidationError("Url field harus ada ketika membuat field baru.")    
+                elif not socialmedia.__contains__('id'):
+                    raise serializers.ValidationError('Tidak bisa menentukan "id" socialmedia yang akan diubah')
+            social , created = model.objects.get_or_create(id = socialmedia.get('id'), profil=instance)
+            social.provider = socialmedia.get('provider', social.provider)
+            social.url = socialmedia.get('url', social.url)
+            social.save()
     
     def update(self, instance, validated_data):
         phones_data = validated_data.pop('phone', [])
@@ -64,20 +78,6 @@ class ProfilSerializer(serializers.ModelSerializer):
             e.save()
 
 
-
-        for socialmedia in socialmedia_data:
-            socials = SocialMedia.objects.all()
-            socials_id = [s.id for s in socials]
-            if socialmedia.get('id', '') not in socials_id:
-                if not socialmedia.__contains__('provider') :
-                    raise serializers.ValidationError("Provider field harus ada ketika membuat field baru.")
-                elif not socialmedia.__contains__('url'):
-                    raise serializers.ValidationError("Url field harus ada ketika membuat field baru.")    
-                elif not socialmedia.__contains__('id'):
-                    raise serializers.ValidationError('Tidak bisa menentukan "id" socialmedia yang akan diubah')
-            social , created = SocialMedia.objects.get_or_create(id = socialmedia.get('id'), profil=instance)
-            social.provider = socialmedia.get('provider', social.provider)
-            social.url = socialmedia.get('url', social.url)
-            social.save()
+        self.processing_nested_data(SocialMedia, socialmedia_data, instance)
 
         return instance
