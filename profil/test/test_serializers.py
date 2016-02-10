@@ -104,6 +104,17 @@ class ProfilSerializerClass(APITestCase):
         self.assertTrue(serializer.is_valid())
         self.assertEqual(dict(serializer.validated_data) , self.valid_data)
 
+    def test_with_partial_update(self):
+        self.valid_data.pop('deskripsi')
+        serializer = ProfilSerializer(data=self.valid_data, partial=True)
+        self.assertTrue(serializer.is_valid())
+        self.assertEqual(dict(serializer.validated_data), self.valid_data)
+        self.assertEqual(dict(serializer.errors), {})
+
+    #------------
+    # Testing with missing key
+    #_________________________
+
     def test_with_missing_nama(self):
         self.assert_with_missing_key('nama')
 
@@ -126,12 +137,10 @@ class ProfilSerializerClass(APITestCase):
         self.assert_with_missing_key('socialmedia', False)
         
 
-    def test_with_partial_update(self):
-        self.valid_data.pop('deskripsi')
-        serializer = ProfilSerializer(data=self.valid_data, partial=True)
-        self.assertTrue(serializer.is_valid())
-        self.assertEqual(dict(serializer.validated_data), self.valid_data)
-        self.assertEqual(dict(serializer.errors), {})
+
+    #-----------------------------
+    # Testing type of nested value
+    #_____________________________
 
     def test_phone_data_type_is_list(self):
         serializer = ProfilSerializer(self.valid_data)
