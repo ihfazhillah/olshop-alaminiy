@@ -6,6 +6,8 @@ from profil.serializers import ProfilSerializer
 from django.contrib.auth.models import User
 
 class APIViewTest(APITestCase):
+    def login_as_sakkuun(self):
+        self.client.login(username='sakkuun',password='sakkuun1234')
 
     def setUp(self):
         #> Making a super user
@@ -35,12 +37,14 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_putting_phone_data(self):
+        self.login_as_sakkuun()
         data = {'phone':[{'id':1,'nomor':'12345', 'tipe':'p'}]}
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data.get('phone'), data['phone'])
 
     def test_edit_phone_data_already_exist_and_add_one(self):
+        self.login_as_sakkuun()
         Phone.objects.create(profil=self.profil, nomor='23456', tipe='p')
         data = {'phone':[{'id':1, 'nomor':'44444', 'tipe':'s'},
                           {'id':2, 'nomor':'12345', 'tipe':'p'}]}
@@ -49,6 +53,7 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.data.get('phone'), data.get('phone'))
 
     def test_edit_phone_with_empty_list(self):
+        self.login_as_sakkuun()
         Phone.objects.create(profil=self.profil, nomor='12345', tipe='p')
         data = {'phone':[]}
         expected = {'id':1,
