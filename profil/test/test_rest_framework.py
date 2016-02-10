@@ -19,6 +19,7 @@ class APIViewTest(APITestCase):
                               deskripsi = 'a fake descriptions',
                               alamat = 'a fake address')
 
+
     def test_retrieving_first_object(self):
         expected = {'id':1,
         'nama':'fake',
@@ -30,11 +31,34 @@ class APIViewTest(APITestCase):
         'socialmedia':[]}
         response = self.client.get(reverse('profil-api'))
         self.assertEqual(response.data, expected)
+    
+    #-----------
+    # Authenticating Test...
+    #-----------
 
     def test_read_only_for_non_user(self):
         data = {'nama':'name'}
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 403)
+
+    def test_editing_nama_field_with_logged_user(self):
+        self.login_as_sakkuun()
+        data = {'nama':'aku ihfazh'}
+        expected = {'id':1,
+        'nama': 'aku ihfazh',
+        'tagline':'a fake person',
+        'deskripsi':'a fake descriptions',
+        'alamat':'a fake address',
+        'phone':[],
+        'email':[],
+        'socialmedia':[]}
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, expected)
+
+    #------------
+    # Testing phone field
+    #------------
 
     def test_putting_phone_data(self):
         self.login_as_sakkuun()
@@ -67,5 +91,7 @@ class APIViewTest(APITestCase):
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, expected)
+
+    
 
 
