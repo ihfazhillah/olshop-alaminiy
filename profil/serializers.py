@@ -42,10 +42,8 @@ class ProfilSerializer(serializers.ModelSerializer):
     
     
     def update(self, instance, validated_data):
-        phones_data = validated_data.__contains__('phone') and \
-                      validated_data.pop('phone') or []
-        email_data = validated_data.__contains__('email') and \
-                     validated_data.pop('email') or [] 
+        phones_data = validated_data.pop('phone', [])
+        email_data = validated_data.pop('email', [])
 
         instance.nama = validated_data.get('nama', instance.nama)
         instance.tagline = validated_data.get('tagline', instance.tagline)
@@ -62,8 +60,8 @@ class ProfilSerializer(serializers.ModelSerializer):
 
         for email in email_data:
             e, c = Email.objects.get_or_create(id = email['id'], profil = instance)
-            e.alamat = email['alamat']
-            e.tipe = email['tipe']
+            e.alamat = email.get('alamat', e.alamat)
+            e.tipe = email.get('tipe', e.tipe)
             e.save()
 
         return instance

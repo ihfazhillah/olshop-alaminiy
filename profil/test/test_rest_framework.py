@@ -92,6 +92,43 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, expected)
 
-    
+    #--------
+    # Testing email field
+    #--------
+
+    def test_adding_email_field(self):
+        data = {'email':[{'id':1, 'alamat':'email@ku.ini', 'tipe':'p'}]}
+        expected = {'id':1,
+        'nama':'fake',
+        'tagline':'a fake person',
+        'deskripsi':'a fake descriptions',
+        'alamat':'a fake address',
+        'phone':[],
+        'email':[{'id':1, 'alamat':'email@ku.ini', 'tipe':'p'}],
+        'socialmedia':[]}
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, expected)
+
+    def test_editing_existing_email(self):
+        Email.objects.create(profil=self.profil, alamat='email@ku.ini', tipe='p')
+        Email.objects.create(profil=self.profil, alamat='email@mu.ini', tipe='s')
+        data = {'email':[{'alamat':'email@dia.ini', 'id':2},
+                          {'tipe':'s', 'id':1}]}
+        expected = {'id':1,
+        'nama':'fake',
+        'tagline':'a fake person',
+        'deskripsi':'a fake descriptions',
+        'alamat':'a fake address',
+        'phone':[],
+        'email':[{'id':1, 'alamat':'email@ku.ini', 'tipe':'s'},
+                  {'id':2, 'alamat':'email@dia.ini', 'tipe':'s'}],
+        'socialmedia':[]}
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, expected)
+
 
 
