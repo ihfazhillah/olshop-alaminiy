@@ -30,6 +30,7 @@ def profil_edit(request):
     return render(request, "profil/profil_edit.html", context )
 
 @api_view(['GET', 'PUT'])
+@permission_classes([permissions.IsAuthenticatedOrReadOnly])
 def profil_api(request):
     profil = Profil.objects.first()
     if request.method == "GET":

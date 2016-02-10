@@ -29,6 +29,11 @@ class APIViewTest(APITestCase):
         response = self.client.get(reverse('profil-api'))
         self.assertEqual(response.data, expected)
 
+    def test_read_only_for_non_user(self):
+        data = {'nama':'name'}
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 403)
+
     def test_putting_phone_data(self):
         data = {'phone':[{'id':1,'nomor':'12345', 'tipe':'p'}]}
         response = self.client.put(reverse('profil-api'), data=data, format='json')
@@ -46,10 +51,16 @@ class APIViewTest(APITestCase):
     def test_edit_phone_with_empty_list(self):
         Phone.objects.create(profil=self.profil, nomor='12345', tipe='p')
         data = {'phone':[]}
-        expected = {'phone':[{'id':'1', 'nomor':'12345', 'tipe':'p'}]}
+        expected = {'id':1,
+        'nama':'fake',
+        'tagline':'a fake person',
+        'deskripsi':'a fake descriptions',
+        'alamat':'a fake address',
+        'phone':[{'id':1,'nomor':'12345','tipe':'p'}],
+        'email':[],
+        'socialmedia':[]}
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 201)
-        print(response.data)
-        self.assertIn(expected.get('phone'), response.data)
+        self.assertEqual(response.data, expected)
 
 
