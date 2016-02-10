@@ -78,13 +78,17 @@ class SocialSerializerTest(APITestCase):
 
 class ProfilSerializerClass(APITestCase):
 
-    def assert_with_missing_key(self, key):
+    def assert_with_missing_key(self, key, required=True):
         data = self.valid_data
         data.pop(key)
         serializer = ProfilSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
-        self.assertEqual(serializer.validated_data, {})
-        self.assertEqual(serializer.errors, {key:['This field is required.']})
+        if required:
+            self.assertFalse(serializer.is_valid())
+            self.assertEqual(serializer.validated_data, {})
+            self.assertEqual(serializer.errors, {key:['This field is required.']})
+        else:
+            self.assertTrue(serializer.is_valid())
+            self.assertEqual(dict(serializer.validated_data), data)
 
     def setUp(self):
         self.valid_data = {'nama':'nama', 'tagline':'tagline', 
@@ -113,23 +117,14 @@ class ProfilSerializerClass(APITestCase):
         self.assert_with_missing_key('alamat')
 
     def test_with_missing_phone(self):
-        self.valid_data.pop('phone')
-        serializer = ProfilSerializer(data=self.valid_data)
-        self.assertTrue(serializer.is_valid())
-        self.assertEqual(dict(serializer.validated_data), self.valid_data)
-
+        self.assert_with_missing_key('phone', required=False)
 
     def test_with_missing_email(self):
-        self.valid_data.pop('email')
-        serializer = ProfilSerializer(data=self.valid_data)
-        self.assertTrue(serializer.is_valid())
-        self.assertEqual(dict(serializer.validated_data), self.valid_data)
-
+        self.assert_with_missing_key('email', False)
+    
     def test_with_missing_socialmedia(self):
-        self.valid_data.pop('socialmedia')
-        serializer = ProfilSerializer(data=self.valid_data)
-        self.assertTrue(serializer.is_valid())
-        self.assertEqual(dict(serializer.validated_data), self.valid_data)
+        self.assert_with_missing_key('socialmedia', False)
+        
 
     def test_with_partial_update(self):
         self.valid_data.pop('deskripsi')
