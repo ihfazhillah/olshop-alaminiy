@@ -1,16 +1,13 @@
 from rest_framework import serializers
 from profil.models import Profil, Phone, Email, SocialMedia
 
+
 class SocialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SocialMedia
         exclude = ['profil']
-        extra_kwargs = {'id':{'read_only':False},
-                        }
-
-   
-
+        extra_kwargs = {'id':{'read_only':False},} 
 
 class EmailSerializer(serializers.ModelSerializer):
 
@@ -40,10 +37,12 @@ class ProfilSerializer(serializers.ModelSerializer):
         fields = ("id", "nama", "tagline", "deskripsi","alamat",
          "phone", "email", 'socialmedia')
     
+    # def validate_socialmedia(self, value):
     
     def update(self, instance, validated_data):
         phones_data = validated_data.pop('phone', [])
         email_data = validated_data.pop('email', [])
+        socialmedia_data = validated_data.pop('socialmedia', [])
 
         instance.nama = validated_data.get('nama', instance.nama)
         instance.tagline = validated_data.get('tagline', instance.tagline)
@@ -63,5 +62,22 @@ class ProfilSerializer(serializers.ModelSerializer):
             e.alamat = email.get('alamat', e.alamat)
             e.tipe = email.get('tipe', e.tipe)
             e.save()
+
+
+
+        for socialmedia in socialmedia_data:
+            socials = SocialMedia.objects.all()
+            socials_id = [s.id for s in socials]
+            if socialmedia.get('id', '') not in socials_id:
+                if not socialmedia.__contains__('provider') :
+                    raise serializers.ValidationError("Provider field harus ada ketika membuat field baru.")
+                elif not socialmedia.__contains__('url'):
+                    raise serializers.ValidationError("Url field harus ada ketika membuat field baru.")    
+                elif not socialmedia.__contains__('id'):
+                    raise serializers.ValidationError('Tidak bisa menentukan "id" socialmedia yang akan diubah')
+            social , created = SocialMedia.objects.get_or_create(id = socialmedia.get('id'), profil=instance)
+            social.provider = socialmedia.get('provider', social.provider)
+            social.url = socialmedia.get('url', social.url)
+            social.save()
 
         return instance

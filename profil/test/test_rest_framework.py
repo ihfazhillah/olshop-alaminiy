@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from rest_framework import status
-from profil.models import Profil, Phone, Email
+from profil.models import Profil, Phone, Email, SocialMedia
 from profil.serializers import ProfilSerializer
 from django.contrib.auth.models import User
 
@@ -129,6 +129,79 @@ class APIViewTest(APITestCase):
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, expected)
+
+    #--------------
+    # Testing social media field
+    #--------------
+
+    def test_adding_social_media(self):
+        data = {'socialmedia':[{'id':1, 'provider':'fake', 'url':'http://fake.url'}]}
+        expected = {'id':1,
+        'nama': 'fake',
+        'tagline':'a fake person',
+        'deskripsi':'a fake descriptions',
+        'alamat':'a fake address',
+        'phone':[],
+        'email':[],
+        'socialmedia':[{'id':1, 'provider':'fake', 'url':'http://fake.url'}]}
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, expected)
+
+    def test_adding_social_media_with_missing_provider(self):
+        data = {'socialmedia':[{'id':1, 'url':'http://fake.url'}]}
+        expected = ['Provider field harus ada ketika membuat field baru.']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_adding_social_media_with_missing_url(self):
+        data = {'socialmedia':[{'id':1, 'provider':'fake'}]}
+        expected = ['Url field harus ada ketika membuat field baru.']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_adding_social_media_with_missing_id(self):
+        data = {'socialmedia':[{'url':'http://url.ku', 'provider':'fake'}]}
+        expected = ['Tidak bisa menentukan "id" socialmedia yang akan diubah']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_editing_social_media_with_missing_id(self):
+        SocialMedia.objects.create(profil=self.profil, provider='fakeprovider', url='http://fakeprovider.net')
+        data = {'socialmedia':[{'url':'http://my.url', 'provider':'fake'}]}
+        expected = ['Tidak bisa menentukan "id" socialmedia yang akan diubah']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_editing_social_media_with_missing_provider_return_201(self):
+        SocialMedia.objects.create(profil=self.profil, provider='fakeprovider', url='http://fakeprovider.net')
+        data = {'socialmedia':[{'id':1, 'provider':'fake'}]}
+        # expected = ['Tidak bisa menentukan "id" socialmedia yang akan diubah']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+        # self.assertEqual(response.data, expected)
+
+    def test_editing_social_media_with_missing_id_in_second(self):
+        SocialMedia.objects.create(profil=self.profil, provider='fakeprovider', url='http://fakeprovider.net')
+        data = {'socialmedia':[{'id':1,'url':'http://my.url', 'provider':'fake'},
+                                {'url':'http://urlk.uu', 'provider':'pass'}]}
+        expected = ['Tidak bisa menentukan "id" socialmedia yang akan diubah']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+
 
 
 
