@@ -30,17 +30,13 @@ def profil_edit(request):
     return render(request, "profil/profil_edit.html", context )
 
 @api_view(['GET', 'PUT'])
-@permission_classes([permissions.IsAuthenticatedOrReadOnly,])
-def profil_api(request, pk=0):
-    queryset = Profil.objects.first()
-
+def profil_api(request):
+    profil = Profil.objects.first()
     if request.method == "GET":
-        serializer = ProfilSerializer(queryset)
+        serializer = ProfilSerializer(profil)
         return Response(serializer.data)
-
     elif request.method == "PUT":
-        serializer = ProfilSerializer(queryset, data=request.data)
+        serializer = ProfilSerializer(instance=profil, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)

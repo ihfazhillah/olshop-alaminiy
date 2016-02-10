@@ -43,7 +43,8 @@ class ProfilSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         phones_data = validated_data.pop('phone')
-        email_data = validated_data.pop('email')
+        email_data = validated_data.__contains__('email') and \
+                     validated_data.pop('email') or [] 
 
         instance.nama = validated_data.get('nama', instance.nama)
         instance.tagline = validated_data.get('tagline', instance.tagline)
