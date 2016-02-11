@@ -130,6 +130,49 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, expected)
 
+    def test_adding_email_with_missing_id(self):
+        data = {'email':[{'alamat':'dia@email.aku', 'tipe':'p'}]}
+        expected = ["Tidak dapat menentukan 'id' yang akan diubah"]
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_adding_email_with_missing_alamat(self):
+        data = {'email':[{'id':1, 'tipe':'p'}]}
+        expected = ['Alamat field harus ada ketika membuat field baru']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_adding_email_with_missing_tipe(self):
+        data = {'email':[{'id':1, 'alamat':'dia@email.aku'}]}
+        expected = ['Tipe field harus ada ketika membuat field baru']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_adding_two_email_with_invalid_one(self):
+        data = {'email':[{'id':1, 'alamat': 'email@ku.loh', 'tipe':'p'},
+                        {'id':2, 'tipe':'s'}]}
+        expected = ['Alamat field harus ada ketika membuat field baru']
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
+    def test_editting_email(self):
+        Email.objects.create(profil=self.profil, alamat='email@ku.loh', tipe='p')
+        data = {'email':[{'id':1, 'alamat':'email@mu.loh'}]}
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+
+    def test_editing_email_with_add_valid(self):
+        pass
+        self.assertEqual(response.status_code, 201)
+
     #--------------
     # Testing social media field
     #--------------

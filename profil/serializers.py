@@ -72,6 +72,15 @@ class ProfilSerializer(serializers.ModelSerializer):
         instance.save()
 
         for email in email_data:
+            email_query = Email.objects.all()
+            emails_id = [x.id for x in email_query]
+            if email.__contains__('id') and email.get('id') not in emails_id:
+                if not email.__contains__('alamat'):
+                    raise serializers.ValidationError('Alamat field harus ada ketika membuat field baru')
+                if not email.__contains__('tipe'):
+                    raise serializers.ValidationError('Tipe field harus ada ketika membuat field baru')
+            elif not email.__contains__('id'):
+                raise serializers.ValidationError("Tidak dapat menentukan 'id' yang akan diubah")
             e, c = Email.objects.get_or_create(id = email['id'], profil = instance)
             e.alamat = email.get('alamat', e.alamat)
             e.tipe = email.get('tipe', e.tipe)
