@@ -56,7 +56,7 @@ class ProfilSerializer(serializers.ModelSerializer):
                         raise serializers.ValidationError(kwargs.get(key))
             object , created = model.objects.get_or_create(id = data.get('id'), profil=instance)
             data_dict =object.__dict__
-            for key in kwargs.keys():
+            for key in data.keys():
                 if key is not 'id':
                     setattr(object, key, data.get(key, data_dict.get(key)))
             object.save()
