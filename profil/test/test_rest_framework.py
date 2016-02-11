@@ -9,6 +9,14 @@ class APIViewTest(APITestCase):
     def login_as_sakkuun(self):
         self.client.login(username='sakkuun',password='sakkuun1234')
 
+    def assert_add_field_with_missing_key(self, field, msg, args):
+        data = { field : args}
+        expected = [msg]
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
     def setUp(self):
         #> Making a super user
         User.objects.create_superuser(username='sakkuun', password='sakkuun1234',
@@ -131,28 +139,20 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.data, expected)
 
     def test_adding_email_with_missing_id(self):
-        data = {'email':[{'alamat':'dia@email.aku', 'tipe':'p'}]}
-        expected = ["Tidak dapat menentukan 'id' yang akan diubah"]
-        self.login_as_sakkuun()
-        response = self.client.put(reverse('profil-api'), data=data, format="json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('email',
+                                               "Tidak dapat menentukan 'id' yang akan diubah",
+                                               [{'alamat':'dia@email.aku', 'tipe':'p'}])
+        
 
     def test_adding_email_with_missing_alamat(self):
-        data = {'email':[{'id':1, 'tipe':'p'}]}
-        expected = ['Alamat field harus ada ketika membuat field baru']
-        self.login_as_sakkuun()
-        response = self.client.put(reverse('profil-api'), data=data, format="json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('email',
+                                               'Alamat field harus ada ketika membuat field baru',
+                                               [{'id':1, 'tipe':'p'}])
 
     def test_adding_email_with_missing_tipe(self):
-        data = {'email':[{'id':1, 'alamat':'dia@email.aku'}]}
-        expected = ['Tipe field harus ada ketika membuat field baru']
-        self.login_as_sakkuun()
-        response = self.client.put(reverse('profil-api'), data=data, format="json")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('email',
+                                               'Tipe field harus ada ketika membuat field baru',
+                                               [{'id':1, 'alamat':'dia@email.aku'}])
 
     def test_adding_two_email_with_invalid_one(self):
         data = {'email':[{'id':1, 'alamat': 'email@ku.loh', 'tipe':'p'},
@@ -193,28 +193,19 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.data, expected)
 
     def test_adding_social_media_with_missing_provider(self):
-        data = {'socialmedia':[{'id':1, 'url':'http://fake.url'}]}
-        expected = ['Provider field harus ada ketika membuat field baru.']
-        self.login_as_sakkuun()
-        response = self.client.put(reverse('profil-api'), data=data, format='json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('socialmedia',
+                                               'Provider field harus ada ketika membuat field baru.',
+                                               [{'id':1, 'url':'http://fake.url'}])
 
     def test_adding_social_media_with_missing_url(self):
-        data = {'socialmedia':[{'id':1, 'provider':'fake'}]}
-        expected = ['Url field harus ada ketika membuat field baru.']
-        self.login_as_sakkuun()
-        response = self.client.put(reverse('profil-api'), data=data, format='json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('socialmedia',
+                                               'Url field harus ada ketika membuat field baru.',
+                                               [{'id':1, 'provider':'fake'}])
 
     def test_adding_social_media_with_missing_id(self):
-        data = {'socialmedia':[{'url':'http://url.ku', 'provider':'fake'}]}
-        expected = ['Tidak bisa menentukan "id" socialmedia yang akan diubah']
-        self.login_as_sakkuun()
-        response = self.client.put(reverse('profil-api'), data=data, format='json')
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('socialmedia',
+                                               'Tidak bisa menentukan "id" socialmedia yang akan diubah',
+                                               [{'url':'http://url.ku', 'provider':'fake'}])
 
     def test_editing_social_media_with_missing_id(self):
         SocialMedia.objects.create(profil=self.profil, provider='fakeprovider', url='http://fakeprovider.net')
