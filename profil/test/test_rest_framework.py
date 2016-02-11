@@ -85,6 +85,15 @@ class APIViewTest(APITestCase):
         self.assert_add_field_with_missing_key('phone',
                                                'Nomor field harus ada ketika membuat field baru',
                                                [{'id':1,'tipe':'p'}])
+    def test_adding_phone_with_tipe_missing(self):
+        self.assert_add_field_with_missing_key('phone',
+                                               'Tipe field harus ada ketika membuat field baru',
+                                               [{'id':1, 'nomor':44444}])
+    def test_adding_phone_twice_with_invalid_one(self):
+        self.assert_add_field_with_missing_key('phone',
+                                               'Tipe field harus ada ketika membuat field baru',
+                                               [{'id':1, 'nomor':'3242', 'tipe':'p'},
+                                               {'id':2, 'nomor':'09876'}])
 
     def test_edit_phone_data_already_exist_and_add_one(self):
         self.login_as_sakkuun()
