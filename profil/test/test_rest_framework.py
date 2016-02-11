@@ -68,12 +68,17 @@ class APIViewTest(APITestCase):
     # Testing phone field
     #------------
 
-    def test_putting_phone_data(self):
+    def test_adding_phone_data(self):
         self.login_as_sakkuun()
         data = {'phone':[{'id':1,'nomor':'12345', 'tipe':'p'}]}
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data.get('phone'), data['phone'])
+
+    def test_adding_phone_with_id_missing(self):
+        self.assert_add_field_with_missing_key('id', 
+                                               'Tidak dapat menentukan "id" yang akan diubah',
+                                               [{'nomor':'32456', 'tipe':'p'}])
 
     def test_edit_phone_data_already_exist_and_add_one(self):
         self.login_as_sakkuun()
