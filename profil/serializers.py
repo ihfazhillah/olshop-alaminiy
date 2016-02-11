@@ -37,21 +37,33 @@ class ProfilSerializer(serializers.ModelSerializer):
         fields = ("id", "nama", "tagline", "deskripsi","alamat",
          "phone", "email", 'socialmedia')
     
-    def processing_nested_data(self, model, validated_data, instance):
-        for socialmedia in validated_data:
-            socials = model.objects.all()
-            socials_id = [s.id for s in socials]
-            if socialmedia.get('id', '') not in socials_id:
-                if not socialmedia.__contains__('provider') :
-                    raise serializers.ValidationError("Provider field harus ada ketika membuat field baru.")
-                elif not socialmedia.__contains__('url'):
-                    raise serializers.ValidationError("Url field harus ada ketika membuat field baru.")    
-                elif not socialmedia.__contains__('id'):
-                    raise serializers.ValidationError('Tidak bisa menentukan "id" socialmedia yang akan diubah')
-            social , created = model.objects.get_or_create(id = socialmedia.get('id'), profil=instance)
-            social.provider = socialmedia.get('provider', social.provider)
-            social.url = socialmedia.get('url', social.url)
-            social.save()
+    def processing_nested_data(self, model, validated_data, instance, kwargs={}):
+        """
+        model : used for query set
+        validated_data : used for validated_data stored after .is_valid() called
+        instance : for profil 
+        kwargs : keyword argument for {field : error}
+        """
+        for data in validated_data:
+            query = model.objects.all()
+            objects_id = [s.id for s in query]
+            if not data.__contains__('id'):
+                raise serializers.ValidationError(kwargs.get('id'))
+                
+            elif data.__contains__('id') and data.get('id') not in objects_id:
+                kwargs.pop('id')
+                for key in kwargs.keys():
+                    if not data.__contains__(key):
+                        raise serializers.ValidationError(kwargs.get(key))
+                
+            object , created = model.objects.get_or_create(id = data.get('id'), profil=instance)
+            # for key in kwargs.keys():
+
+            #     object.get(key) = data.get(key, object.get(key))
+
+            object.provider = data.get('provider', object.provider)
+            object.url = data.get('url', object.url)
+            object.save()
     
     def update(self, instance, validated_data):
         phones_data = validated_data.pop('phone', [])
@@ -86,7 +98,9 @@ class ProfilSerializer(serializers.ModelSerializer):
             e.tipe = email.get('tipe', e.tipe)
             e.save()
 
-
-        self.processing_nested_data(SocialMedia, socialmedia_data, instance)
+        social_errors = {'id':'Tidak bisa menentukan "id" socialmedia yang akan diubah',
+                         'provider':"Provider field harus ada ketika membuat field baru.",
+                         'url':"Url field harus ada ketika membuat field baru."}
+        self.processing_nested_data(SocialMedia, socialmedia_data, instance, social_errors)
 
         return instance

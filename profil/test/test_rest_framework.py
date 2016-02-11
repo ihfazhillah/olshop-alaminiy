@@ -170,8 +170,23 @@ class APIViewTest(APITestCase):
         response = self.client.put(reverse('profil-api'), data=data, format='json')
         self.assertEqual(response.status_code, 201)
 
+    def test_editing_email_with_invalid_id(self):
+        Email.objects.create(profil=self.profil, alamat='email@ku.loh', tipe='p')
+        data = {'email':[{'alamat':'email@mu.it', 'tipe':'s'}]}
+        expected = ["Tidak dapat menentukan 'id' yang akan diubah"]
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, expected)
+
     def test_editing_email_with_add_valid(self):
-        pass
+        Email.objects.create(profil=self.profil, alamat='email@ku.loh', tipe='p')
+        data = {'email':[{'id':1, 'alamat':'email@mu.ini'},
+                        {'id':4, 'alamat':'email@email.email', 'tipe':'s'}]}
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+
 
     #--------------
     # Testing social media field
