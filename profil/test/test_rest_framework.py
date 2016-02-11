@@ -9,14 +9,17 @@ class APIViewTest(APITestCase):
     def login_as_sakkuun(self):
         self.client.login(username='sakkuun',password='sakkuun1234')
 
-    def assert_add_field_with_missing_key(self, field, msg, args):
+    def assert_add_field_with_missing_key(self, field, error_msg=None, args=[]):
         data = { field : args}
-        expected = [msg]
         self.login_as_sakkuun()
         response = self.client.put(reverse('profil-api'), data=data, format="json")
-        # print(response.data)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, expected)
+        if error_msg is not None:
+            expected = [error_msg]
+            # print(response.data)
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.data, expected)
+        else:
+            self.assertEqual(response.status_code, 201)    
 
     def setUp(self):
         #> Making a super user
@@ -95,6 +98,13 @@ class APIViewTest(APITestCase):
                                                [{'id':1, 'nomor':'3242', 'tipe':'p'},
                                                {'id':2, 'nomor':'09876'}])
 
+    def test_edit_phone_with_missing_nomor_should_return_201(self):
+        Phone.objects.create(profil=self.profil, nomor='1111111', tipe='p')
+        data = {'phone':[{'id':1, 'tipe':'s'}]}
+        self.login_as_sakkuun()
+        response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
+
     def test_edit_phone_data_already_exist_and_add_one(self):
         self.login_as_sakkuun()
         Phone.objects.create(profil=self.profil, nomor='23456', tipe='p')
@@ -105,20 +115,9 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.data.get('phone'), data.get('phone'))
 
     def test_edit_phone_with_empty_list(self):
-        self.login_as_sakkuun()
+        # self.login_as_sakkuun()
         Phone.objects.create(profil=self.profil, nomor='12345', tipe='p')
-        data = {'phone':[]}
-        expected = {'id':1,
-        'nama':'fake',
-        'tagline':'a fake person',
-        'deskripsi':'a fake descriptions',
-        'alamat':'a fake address',
-        'phone':[{'id':1,'nomor':'12345','tipe':'p'}],
-        'email':[],
-        'socialmedia':[]}
-        response = self.client.put(reverse('profil-api'), data=data, format='json')
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, expected)
+        self.assert_add_field_with_missing_key('phone', args=[])
 
     #--------
     # Testing email field
