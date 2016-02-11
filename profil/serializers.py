@@ -37,7 +37,7 @@ class ProfilSerializer(serializers.ModelSerializer):
         fields = ("id", "nama", "tagline", "deskripsi","alamat",
          "phone", "email", 'socialmedia')
     
-    def processing_nested_data(self, model, validated_data, instance, kwargs={}):
+    def validating_nested_data_and_save(self, model, validated_data, instance, kwargs={}):
         """
         model : used for query set
         validated_data : used for validated_data stored after .is_valid() called
@@ -51,18 +51,14 @@ class ProfilSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(kwargs.get('id'))
                 
             elif data.__contains__('id') and data.get('id') not in objects_id:
-                kwargs.pop('id')
                 for key in kwargs.keys():
                     if not data.__contains__(key):
                         raise serializers.ValidationError(kwargs.get(key))
-                
             object , created = model.objects.get_or_create(id = data.get('id'), profil=instance)
-            # for key in kwargs.keys():
-
-            #     object.get(key) = data.get(key, object.get(key))
-
-            object.provider = data.get('provider', object.provider)
-            object.url = data.get('url', object.url)
+            data_dict =object.__dict__
+            for key in kwargs.keys():
+                if key is not 'id':
+                    setattr(object, key, data.get(key, data_dict.get(key)))
             object.save()
     
     def update(self, instance, validated_data):
@@ -83,24 +79,15 @@ class ProfilSerializer(serializers.ModelSerializer):
             phone.save()
         instance.save()
 
-        for email in email_data:
-            email_query = Email.objects.all()
-            emails_id = [x.id for x in email_query]
-            if email.__contains__('id') and email.get('id') not in emails_id:
-                if not email.__contains__('alamat'):
-                    raise serializers.ValidationError('Alamat field harus ada ketika membuat field baru')
-                if not email.__contains__('tipe'):
-                    raise serializers.ValidationError('Tipe field harus ada ketika membuat field baru')
-            elif not email.__contains__('id'):
-                raise serializers.ValidationError("Tidak dapat menentukan 'id' yang akan diubah")
-            e, c = Email.objects.get_or_create(id = email['id'], profil = instance)
-            e.alamat = email.get('alamat', e.alamat)
-            e.tipe = email.get('tipe', e.tipe)
-            e.save()
+        email_errors = {'id':"Tidak dapat menentukan 'id' yang akan diubah",
+                        'alamat':'Alamat field harus ada ketika membuat field baru',
+                        'tipe':'Tipe field harus ada ketika membuat field baru'}
+        self.validating_nested_data_and_save(Email, email_data, instance, email_errors)
+        
 
         social_errors = {'id':'Tidak bisa menentukan "id" socialmedia yang akan diubah',
                          'provider':"Provider field harus ada ketika membuat field baru.",
                          'url':"Url field harus ada ketika membuat field baru."}
-        self.processing_nested_data(SocialMedia, socialmedia_data, instance, social_errors)
+        self.validating_nested_data_and_save(SocialMedia, socialmedia_data, instance, social_errors)
 
         return instance
