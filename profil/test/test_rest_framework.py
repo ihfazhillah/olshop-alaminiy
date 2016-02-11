@@ -81,6 +81,11 @@ class APIViewTest(APITestCase):
                                                'Tidak dapat menentukan "id" yang akan diubah',
                                                [{'nomor':'32456', 'tipe':'p'}])
 
+    def test_adding_phone_with_nomor_missing(self):
+        self.assert_add_field_with_missing_key('phone',
+                                               'Nomor field harus ada ketika membuat field baru',
+                                               [{'id':1,'tipe':'p'}])
+
     def test_edit_phone_data_already_exist_and_add_one(self):
         self.login_as_sakkuun()
         Phone.objects.create(profil=self.profil, nomor='23456', tipe='p')

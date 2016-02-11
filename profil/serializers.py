@@ -79,7 +79,8 @@ class ProfilSerializer(serializers.ModelSerializer):
         #     phone.save()
         # instance.save()
 
-        phone_errors = {'id':'Tidak dapat menentukan "id" yang akan diubah'}
+        phone_errors = {'id':'Tidak dapat menentukan "id" yang akan diubah',
+                        'nomor':'Nomor field harus ada ketika membuat field baru'}
         self.validating_nested_data_and_save(Phone, phones_data, instance, phone_errors)
 
         email_errors = {'id':"Tidak dapat menentukan 'id' yang akan diubah",
