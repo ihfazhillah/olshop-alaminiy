@@ -28,7 +28,7 @@ class SocialMedia(models.Model):
 
 
 class Phone(models.Model):
-    profil = models.ForeignKey(Profil, default=1, related_name="phone")
+    profil = models.ForeignKey(Profil, related_name="phone")
     nomor = models.CharField(max_length=20)
     TIPE_CHOICE = (
                    ("p", "primary"),
@@ -44,7 +44,7 @@ class Email(models.Model):
                    ("p", "primary"),
                    ("s", "secondary")
                    )
-    profil = models.ForeignKey(Profil, default='', related_name='email')
+    profil = models.ForeignKey(Profil, related_name='email')
     alamat = models.EmailField()
     tipe = models.CharField(max_length=1, choices=TIPE_CHOICE)
 

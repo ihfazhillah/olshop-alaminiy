@@ -14,6 +14,7 @@ class APIViewTest(APITestCase):
         expected = [msg]
         self.login_as_sakkuun()
         response = self.client.put(reverse('profil-api'), data=data, format="json")
+        # print(response.data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, expected)
 
@@ -76,7 +77,7 @@ class APIViewTest(APITestCase):
         self.assertEqual(response.data.get('phone'), data['phone'])
 
     def test_adding_phone_with_id_missing(self):
-        self.assert_add_field_with_missing_key('id', 
+        self.assert_add_field_with_missing_key('phone', 
                                                'Tidak dapat menentukan "id" yang akan diubah',
                                                [{'nomor':'32456', 'tipe':'p'}])
 

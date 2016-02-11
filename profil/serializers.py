@@ -71,13 +71,16 @@ class ProfilSerializer(serializers.ModelSerializer):
         instance.deskripsi = validated_data.get('deskripsi', instance.deskripsi)
         instance.alamat = validated_data.get('alamat', instance.alamat)
 
-        for phone_data in phones_data:
-            phone, created = Phone.objects.get_or_create(id = phone_data['id'],
-                                                         profil= instance)
-            phone.nomor = phone_data.get('nomor', phone.nomor)
-            phone.tipe = phone_data.get('tipe', phone.tipe)
-            phone.save()
-        instance.save()
+        # for phone_data in phones_data:
+        #     phone, created = Phone.objects.get_or_create(id = phone_data['id'],
+        #                                                  profil= instance)
+        #     phone.nomor = phone_data.get('nomor', phone.nomor)
+        #     phone.tipe = phone_data.get('tipe', phone.tipe)
+        #     phone.save()
+        # instance.save()
+
+        phone_errors = {'id':'Tidak dapat menentukan "id" yang akan diubah'}
+        self.validating_nested_data_and_save(Phone, phones_data, instance, phone_errors)
 
         email_errors = {'id':"Tidak dapat menentukan 'id' yang akan diubah",
                         'alamat':'Alamat field harus ada ketika membuat field baru',
