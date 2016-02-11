@@ -168,10 +168,10 @@ class APIViewTest(APITestCase):
         data = {'email':[{'id':1, 'alamat':'email@mu.loh'}]}
         self.login_as_sakkuun()
         response = self.client.put(reverse('profil-api'), data=data, format='json')
+        self.assertEqual(response.status_code, 201)
 
     def test_editing_email_with_add_valid(self):
         pass
-        self.assertEqual(response.status_code, 201)
 
     #--------------
     # Testing social media field
