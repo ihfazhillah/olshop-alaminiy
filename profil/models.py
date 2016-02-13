@@ -39,6 +39,13 @@ class Phone(models.Model):
     def __str__(self):
         return str(self.nomor)
 
+    def save(self, *args, **kwargs):
+        phones = Phone.objects.all()
+        phone_tipe = [p.tipe for p in phones]
+        if self.tipe in phone_tipe:
+            self.tipe = "s"
+        super(Phone, self).save(*args, **kwargs)	
+
 class Email(models.Model):
     TIPE_CHOICE = (
                    ("p", "primary"),
@@ -50,4 +57,11 @@ class Email(models.Model):
 
     def __str__(self):
         return self.alamat
+
+    def save(self, *args, **kwargs):
+        emails = Email.objects.all()
+        email_tipe = [e.tipe for e in emails]
+        if 'p' in email_tipe:
+            self.tipe = 's'
+        super(Email, self).save(*args, **kwargs)
 

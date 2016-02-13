@@ -56,26 +56,52 @@ class PhoneModelTest(TestCase):
         self.assertEqual(profil.phone.all()[1].nomor, "3241")
         self.assertEqual(profil.phone.all()[1].get_tipe_display(), "primary")
 
+    def test_primer_phone_tipe_must_be_one_else_change_it_to_secondary(self):
+        profil = Profil.objects.create(nama="alaminiy",
+                                       tagline="ini tagline",
+                                       deskripsi = "ini deskripsi",
+                                       alamat = "ini alamat"
+                                       )
+        Phone.objects.create(profil=profil, nomor='1346555', tipe='p')
+        Phone.objects.create(profil=profil, nomor='145454555', tipe='p')
+        self.assertEqual(profil.phone.count(), 2)
+        self.assertNotEqual(profil.phone.first().tipe, profil.phone.last().tipe)
+        self.assertEqual(profil.phone.all()[1].tipe , 's')
+
 class EmailModelTest(TestCase):
 
-    def test_can_create_object_and_retrieve_it(self):
-        profil = Profil.objects.create(nama="alaminiy",
+    def setUp(self):
+        
+
+        self.profil = Profil.objects.create(nama="alaminiy",
                               tagline="ini tagline",
                               deskripsi="ini deskripsi",
                               alamat="ini alamat")
-        email = Email.objects.create(alamat="alamat1@coba.com",
+
+        self.email = Email.objects.create(alamat="alamat1@coba.com",
                                      tipe="p",
-                                     profil=profil)
-        email_s = Email.objects.create(profil=profil,
+                                     profil=self.profil)
+    
+        self.email_s = Email.objects.create(profil=self.profil,
                                        alamat="alamat2@coba.com",
                                        tipe="s",
                                        )
 
-        self.assertEqual(profil.email.count(), 2)
-        self.assertEqual(email.profil.nama, profil.nama)
-        self.assertEqual(email.alamat, "alamat1@coba.com")
-        self.assertEqual(email.get_tipe_display(), "primary")
-        self.assertEqual(email_s.profil.nama, profil.nama)
-        self.assertEqual(email_s.alamat, "alamat2@coba.com")
-        self.assertEqual(email_s.get_tipe_display(), "secondary")
+
+    def test_can_create_object_and_retrieve_it(self):
+        
+        self.assertEqual(self.profil.email.count(), 2)
+        self.assertEqual(self.email.profil.nama, self.profil.nama)
+        self.assertEqual(self.email.alamat, "alamat1@coba.com")
+        self.assertEqual(self.email.get_tipe_display(), "primary")
+        self.assertEqual(self.email_s.profil.nama, self.profil.nama)
+        self.assertEqual(self.email_s.alamat, "alamat2@coba.com")
+        self.assertEqual(self.email_s.get_tipe_display(), "secondary")
+
+    def test_override_tipe_input_if_it_primary_twice(self):
+        self.email_s.tipe = "p"
+        self.email_s.save()
+        self.assertEqual(self.profil.email.count(), 2)
+        self.assertEqual(self.email_s.tipe, 's')
+        
 
